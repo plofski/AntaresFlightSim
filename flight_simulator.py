@@ -8,13 +8,39 @@ class Simulation:
 
 
     def __init__(self,init_function,update_function,log_function):
+
         self.altitude = 0
         self.long = 0
         self.lat = 0
+
+        self.shunt_voltage = 0
+        self.bus_voltage = 0
+        self.current_mA = 0
+        self.power_mw = 0
+
+        self.magnetic_X = 0
+        self.magnetic_Y = 0
+        self.magnetic_Z = 0
+
+        self.accel_X = 0
+        self.accel_Y = 0
+        self.accel_Z = 0
+
+        
+        self.gyro_X = 0
+        self.gyro_Y = 0
+        self.gyro_Z = 0
+
+
+
         self.update_function = update_function
         self.log_function = log_function
         self.finished=False
         self.start_state = 1
+
+
+
+
 
         init_function(self)
 
@@ -86,6 +112,35 @@ class SimController():
             out_str= out_str.replace('%BARO%', '')
             sensor_value = 9
         
+
+        elif "%BATT%" in out_str:
+            out_str= out_str.replace('%BARO%', '')
+            self.ser.write(repr(self.currentSim.shunt_voltage).encode())
+            self.ser.write(repr(self.currentSim.bus_voltage).encode())
+            self.ser.write(repr(self.currentSim.current_mA).encode())
+            self.ser.write(repr(self.currentSim.power_mw).encode())
+
+
+        elif "%MAGNET%" in out_str :
+            out_str= out_str.replace('%MAGNET%', '')
+            self.ser.write(repr(self.currentSim.magnetic_X).encode())
+            self.ser.write(repr(self.currentSim.magnetic_Y).encode())
+            self.ser.write(repr(self.currentSim.magnetic_Z).encode())
+        
+
+        elif "%ACCEL%"in out_str:
+            out_str= out_str.replace('%ACCEL%', '')
+            self.ser.write(repr(self.currentSim.accel_Y).encode())
+            self.ser.write(repr(self.currentSim.accel_Y).encode())
+            self.ser.write(repr(self.currentSim.accel_Z).encode())
+
+        elif r"%GYRO%" in out_str:
+            out_str= out_str.replace(r"%GYRO%", '')
+            self.ser.write(repr(self.currentSim.gyro_X).encode())
+            self.ser.write(repr(self.currentSim.gyro_Y).encode())
+            self.ser.write(repr(self.currentSim.gyro_Z).encode())
+        
+
 
         if(sensor_value != None):
             self.ser.write(repr(sensor_value).encode())
